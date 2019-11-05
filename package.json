@@ -1,0 +1,22 @@
+{
+  "name": "Genetic-Dots",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/main.js",
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc -w",
+    "start": "tsc && electron . --disable-gpu"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "electron": "^7.0.1",
+    "three": "^0.110.0",
+    "typescript": "^3.6.4"
+  },
+  "dependencies": {
+    "glob": "^7.1.5"
+  }
+}
