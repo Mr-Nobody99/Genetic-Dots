@@ -14,12 +14,12 @@ export class Brain{
     }
 
     mutate() {
-        let mutationRate = 0.01;
+        let mutationRate = 0.1;
         for(let i = 0; i < this.angles.length; i++){
             if(Math.random() < mutationRate){
-                let angle = Math.floor((Math.random()*90)-45) * Math.PI / 180;
-                this.angles[i] = angle;
-                // this.angles[i] += Math.floor((Math.random()*50)-25) * Math.PI/180;
+                // let angle = Math.floor((Math.random()*90)-45) * Math.PI / 180;
+                // this.angles[i] = angle;
+                this.angles[i] += Math.floor((Math.random()*50)-25) * Math.PI/180;
             }
         }
     }

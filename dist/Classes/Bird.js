@@ -12,13 +12,6 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-var __spreadArrays = (this && this.__spreadArrays) || function () {
-    for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
-    for (var r = Array(s), k = 0, i = 0; i < il; i++)
-        for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
-            r[k] = a[j];
-    return r;
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 var three_1 = require("three");
 var Brain_1 = require("./Brain");
@@ -26,20 +19,21 @@ var Bird = /** @class */ (function (_super) {
     __extends(Bird, _super);
     function Bird(scene, position) {
         var _this = _super.call(this) || this;
-        _this.brain = new Brain_1.Brain(500);
         _this.loaded = false;
         _this.alive = true;
-        _this.speed = 10;
-        _this.foundGoal = false;
+        _this.speed = 5;
+        _this.best = false;
+        _this.goalReached = false;
         _this.fitness = 0;
         _this.scene = scene;
+        _this.brain = new Brain_1.Brain(500);
         _this.position.set(position.x, position.y, position.z);
         _this.initMesh();
         return _this;
     }
     Bird.prototype.update = function (deltaTime, frustrum) {
         this.checkGoal();
-        this.translateY(this.speed * deltaTime);
+        this.translateY(0.25);
         if (this.brain.step < this.brain.angles.length) {
             this.rotateZ(this.brain.angles[this.brain.step]);
             this.brain.step++;
@@ -57,12 +51,12 @@ var Bird = /** @class */ (function (_super) {
     Bird.prototype.checkGoal = function () {
         var goal = this.scene.getObjectByName('goal');
         if (this.position.distanceTo(goal.position) < 1) {
-            this.foundGoal = true;
+            this.goalReached = true;
             this.alive = false;
         }
     };
     Bird.prototype.calcFitness = function () {
-        if (this.foundGoal) {
+        if (this.goalReached) {
             this.fitness = 1 / 16 + 10000 / (Math.pow(this.brain.step, 2));
         }
         else {
@@ -73,7 +67,7 @@ var Bird = /** @class */ (function (_super) {
     Bird.prototype.getBaby = function () {
         var baby = new Bird(this.scene, new three_1.Vector3(0, -15, 0));
         baby.brain = new Brain_1.Brain(this.brain.angles.length);
-        baby.brain.angles = __spreadArrays(this.brain.clone());
+        baby.brain.angles = this.brain.clone();
         return baby;
     };
     Bird.prototype.destroy = function () {

@@ -4,17 +4,19 @@ import { Brain } from "./Brain";
 export class Bird extends Object3D{
     scene: Scene;
     mesh: Mesh;
-    brain: Brain = new Brain(500);
+    brain: Brain;
     loaded: boolean = false;
     alive: boolean = true;
-    speed: number = 10;
+    speed: number = 5;
 
-    foundGoal: boolean = false;
+    best:boolean = false;
+    goalReached: boolean = false;
     fitness: number = 0;
 
     constructor(scene: THREE.Scene, position: Vector3) {
         super();
         this.scene = scene;
+        this.brain = new Brain(500);
         this.position.set(position.x, position.y, position.z);
         this.initMesh();
     }
@@ -23,7 +25,7 @@ export class Bird extends Object3D{
         
         this.checkGoal();
 
-        this.translateY(this.speed * deltaTime);
+        this.translateY(0.25);
 
         if(this.brain.step < this.brain.angles.length){
             this.rotateZ(this.brain.angles[this.brain.step]);
@@ -42,13 +44,13 @@ export class Bird extends Object3D{
     checkGoal(){
         let goal = this.scene.getObjectByName('goal');
         if(this.position.distanceTo(goal.position) < 1){
-            this.foundGoal = true;
+            this.goalReached = true;
             this.alive = false;
         }
     }
 
     calcFitness(){
-        if(this.foundGoal) {
+        if(this.goalReached) {
             this.fitness = 1 / 16 + 10000/(this.brain.step**2); 
         } else {
             let distance = this.position.distanceTo(this.scene.getObjectByName('goal').position);
@@ -59,7 +61,7 @@ export class Bird extends Object3D{
     getBaby():Bird{
         let baby = new Bird(this.scene, new Vector3(0, -15, 0));
         baby.brain = new Brain(this.brain.angles.length);
-        baby.brain.angles = [...this.brain.clone()];
+        baby.brain.angles = this.brain.clone();
         return baby;
     }
 

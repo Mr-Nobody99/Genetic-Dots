@@ -33,11 +33,13 @@ var Population = /** @class */ (function () {
         return true;
     };
     Population.prototype.makeNewGeneration = function () {
+        var newBirds = [];
+        var best = this.getBest().getBaby();
+        newBirds.push(best);
         this.calcFitnessSum();
         this.birds.forEach(function (bird) {
             bird.destroy();
         });
-        var newBirds = [];
         for (var i = 0; i < this.birds.length; i++) {
             var parent_1 = void 0;
             while (!parent_1) {
@@ -45,6 +47,9 @@ var Population = /** @class */ (function () {
             }
             newBirds.push(parent_1.getBaby());
         }
+        best.mesh.material = new three_1.MeshPhongMaterial({ color: 'blue' });
+        best.best = true;
+        newBirds[0];
         this.birds = newBirds.slice();
         this.gen++;
     };
@@ -67,8 +72,21 @@ var Population = /** @class */ (function () {
     };
     Population.prototype.mutate = function () {
         for (var i = 0; i < this.birds.length; i++) {
-            this.birds[i].brain.mutate();
+            if (!this.birds[i].best) {
+                this.birds[i].brain.mutate();
+            }
         }
+    };
+    Population.prototype.getBest = function () {
+        var high = 0;
+        var index = 0;
+        for (var i = 1; i < this.birds.length; i++) {
+            if (this.birds[i].fitness > high) {
+                high = this.birds[i].fitness;
+                index = i;
+            }
+        }
+        return this.birds[index];
     };
     return Population;
 }());

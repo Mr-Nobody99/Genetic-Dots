@@ -23,7 +23,7 @@ renderer.setAnimationLoop(function () { update(); });
 renderer.setClearColor(0xffffff);
 //Add render canvas element to document body
 document.body.appendChild(renderer.domElement);
-var population = new Population_1.Population(100, scene);
+var population = new Population_1.Population(200, scene);
 var goal = makeGoal();
 var block = false;
 function update() {

@@ -27,7 +27,7 @@ renderer.setClearColor(0xffffff);
 //Add render canvas element to document body
 document.body.appendChild(renderer.domElement);
 
-const population = new Population(100, scene);
+const population = new Population(200, scene);
 
 const goal = makeGoal();
 

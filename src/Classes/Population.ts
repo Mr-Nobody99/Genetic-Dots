@@ -1,5 +1,5 @@
 import { Bird } from "./Bird";
-import { Scene, Vector3, Frustum } from "three";
+import { Scene, Vector3, Frustum, Material, MeshPhongMaterial, Color} from "three";
 
 export class Population{
     birds: Array<Bird> = [];
@@ -36,12 +36,14 @@ export class Population{
     }
 
     makeNewGeneration(){
+        let newBirds = [];
+        let best = this.getBest().getBaby();
+        newBirds.push(best);
         this.calcFitnessSum();
         this.birds.forEach(bird => {
             bird.destroy();
         });
 
-        let newBirds = [];
 
         for(let i = 0; i < this.birds.length; i++){
             let parent: Bird;
@@ -50,6 +52,10 @@ export class Population{
             }
             newBirds.push(parent.getBaby());
         }
+
+        best.mesh.material = new MeshPhongMaterial({color: 'blue'});
+        best.best = true;
+        newBirds[0];
 
         this.birds = newBirds.slice();
         this.gen++;
@@ -77,7 +83,21 @@ export class Population{
 
     mutate(){
         for(let i = 0; i < this.birds.length; i++){
-            this.birds[i].brain.mutate();
+            if(!this.birds[i].best){
+                this.birds[i].brain.mutate();
+            }
         }
+    }
+
+    getBest(){
+        let high = 0;
+        let index = 0;
+        for(let i = 1; i < this.birds.length; i++){
+            if(this.birds[i].fitness > high){
+                high = this.birds[i].fitness;
+                index = i;
+            }
+        }
+        return this.birds[index];
     }
 }
